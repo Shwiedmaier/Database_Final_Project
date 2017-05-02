@@ -36,6 +36,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,7 +61,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
     private final JFrame frame;
     private int lives = 3;
     public Hero theOne;
-
+    Connection connection = null;
     private JPanel buttonPanel;
 
     public boolean running = false;
@@ -159,16 +160,11 @@ public class Game extends Canvas implements Runnable, ActionListener {
 
         long lastTimer = System.currentTimeMillis();
         double delta = 0; //how many nano-seconds have gone by so far. Once we hit 1, we will minus 1 from it
-        username = JOptionPane.showInputDialog(frame,
-                "Please enter your name:", null);
-        theOne = new Hero(username);
 
-        String pt1 = "<html><body width='";
-        String pt2 = "'><h1>Welcome " + username + " to Daisy Imports Datbase</h1>";
+
 
         int width = 420;
-        String s = pt1 + width + pt2;
-        JOptionPane.showMessageDialog(frame, s, "Daisy Imports", 3);
+     
         frame.setVisible(true);
 
         while (running) { //DA GAME
@@ -222,7 +218,6 @@ public class Game extends Canvas implements Runnable, ActionListener {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        
         try {
             image2 = ImageIO.read(new File("name.png"));
         } catch (IOException ex) {
@@ -241,8 +236,21 @@ public class Game extends Canvas implements Runnable, ActionListener {
 
     }
 
+    public void connect() {
+
+        try {
+            connection = DriverManager
+                    .getConnection("jdbc:mysql://mysql.winnerdigital.net:3306/scott_412", "scott1044", "ohyesdaddy!");
+            JOptionPane.showMessageDialog(frame, "WE MADE IT", "Daisy Imports", 3);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(frame, "FAILED TO CONNECT!", "Daisy Imports", 3);
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
+
         int answer = 0;
         String str = " ";
         if (e.getSource() == clickAdd) {
@@ -254,10 +262,39 @@ public class Game extends Canvas implements Runnable, ActionListener {
         }
         if (e.getSource() == clickSubtract) {
             subtractClick = true;
-            Subtraction sub1 = new Subtraction();
-            str = JOptionPane.showInputDialog(frame,
-                    "What is " + sub1.getP1() + " - " + sub1.getP2() + "?", null);;
-            answer = sub1.getAnswer();
+            connect();
+            try (PreparedStatement ps = connection.prepareStatement(" SELECT * FROM DAISYEMPLOYEE")) {
+                // In the SQL statement being prepared, each question mark is a placeholder
+                // that must be replaced with a value you provide through a "set" method invocation.
+                // The following two method calls replace the two placeholders; the first is
+                // replaced by a string value, and the second by an integer value.
+                //ps.setString(1, "scott");
+
+                // The ResultSet, rs, conveys the result of executing the SQL statement.
+                // Each time you call rs.next(), an internal row pointer, or cursor,
+                // is advanced to the next row of the result.  The cursor initially is
+                // positioned before the first row.
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        int numColumns = rs.getMetaData().getColumnCount();
+                        for (int i = 1; i <= numColumns; i++) {
+                            JOptionPane.showMessageDialog(frame, "COLUMN " + i + " = " + rs.getObject(i), "Daisy Imports", 3);
+                            // Column numbers start at 1.
+                            // Also there are many methods on the result set to return
+                            // the column as a particular type. Refer to the Sun documentation
+                            // for the list of valid conversions.
+                           // System.out.println("COLUMN " + i + " = " + rs.getObject(i));
+                        } // for
+                    } // while
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, "COMPLETELY FUCKED", "Daisy Imports", 3);
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                } // try
+            } catch (SQLException ex) {
+                 JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            } // try
+
         }
         if (e.getSource() == clickMultiply) {
             multiplyClick = true;
@@ -273,46 +310,5 @@ public class Game extends Canvas implements Runnable, ActionListener {
                     "What is " + div1.getP1() + " / " + div1.getP2() + "?", null);
             answer = div1.getAnswer();
         }
-        //Database Connection
-                        Connection connection = null;
-                        try {
-                            connection = DriverManager
-                                    .getConnection("jdbc:mysql://mysql.winnerdigital.net:3306/scott_412", "scott1044", "ohyesdaddy!");
-                        } catch (SQLException ex) {
-                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                            String query = " insert into highscores ( score, name)" + " values ( ?, ?)";
-
-                            // create the mysql insert preparedstatement
-                            PreparedStatement preparedStmt = null;
-                        try {
-                            preparedStmt = connection.prepareStatement(query);
-                        } catch (SQLException ex) {
-                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        try {
-                            preparedStmt.setInt(1,theOne.getExp() );
-                        } catch (SQLException ex) {
-                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        try {
-                            preparedStmt.setString(2, username);
-                        } catch (SQLException ex) {
-                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        try {
-                            // execute the preparedstatement
-                            preparedStmt.execute();
-                        } catch (SQLException ex) {
-                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    }
-                
-            
-
-        
-    
+    }
+}
