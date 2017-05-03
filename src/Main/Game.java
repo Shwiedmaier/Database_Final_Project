@@ -60,7 +60,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
 
     private final JFrame frame;
     
-    public Hero theOne;
+ 
     Connection connection = null;
     private JPanel buttonPanel;
 
