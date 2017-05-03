@@ -57,9 +57,9 @@ public class Game extends Canvas implements Runnable, ActionListener {
     public static final int SCALE = 3;
     public static final String NAME = "Daisy Imports";
 
-    private String levelString;
+
     private final JFrame frame;
-    private int lives = 3;
+    
     public Hero theOne;
     Connection connection = null;
     private JPanel buttonPanel;
@@ -251,14 +251,11 @@ public class Game extends Canvas implements Runnable, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        int answer = 0;
-        String str = " ";
+
         if (e.getSource() == clickAdd) {
             addClick = true;
-            Addition add1 = new Addition();
-            str = JOptionPane.showInputDialog(frame,
-                    "What is " + add1.getP1() + " + " + add1.getP2() + "?", null);
-            answer = add1.getAnswer();
+
+ 
         }
         if (e.getSource() == clickSubtract) {
             subtractClick = true;
@@ -298,17 +295,11 @@ public class Game extends Canvas implements Runnable, ActionListener {
         }
         if (e.getSource() == clickMultiply) {
             multiplyClick = true;
-            Multiplication mult1 = new Multiplication();
-            str = JOptionPane.showInputDialog(frame,
-                    "What is " + mult1.getP1() + " * " + mult1.getP2() + "?", null);;
-            answer = mult1.getAnswer();
+
         }
         if (e.getSource() == clickDivide) {
             divideClick = true;
-            Division div1 = new Division();
-            str = JOptionPane.showInputDialog(frame,
-                    "What is " + div1.getP1() + " / " + div1.getP2() + "?", null);
-            answer = div1.getAnswer();
+
         }
     }
 }
