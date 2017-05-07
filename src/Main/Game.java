@@ -13,7 +13,11 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
 import java.awt.Label;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,10 +42,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 /**
  *
@@ -57,10 +65,8 @@ public class Game extends Canvas implements Runnable, ActionListener {
     public static final int SCALE = 3;
     public static final String NAME = "Daisy Imports";
 
-
     private final JFrame frame;
-    
- 
+
     Connection connection = null;
     private JPanel buttonPanel;
 
@@ -72,48 +78,86 @@ public class Game extends Canvas implements Runnable, ActionListener {
     private BufferedImage image2 = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
-    private JButton clickAdd;
-    private JButton clickSubtract;
-    private JButton clickMultiply;
-    private JButton clickDivide;
-    private JLabel label1;
-    private JLabel label2;
-    private boolean addClick = false;
-    private boolean subtractClick = false;
-    private boolean multiplyClick = false;
-    private boolean divideClick = false;
+    private JButton clickButton1;
+    private JButton clickButton2;
+    private JButton clickButton3;
+    private JButton clickButton4;
+    private JButton clickButton5;
+    private JButton clickButton6;
+    private JButton clickButton7;
+    private JButton clickButton8;
+    private JButton clickButton9;
+    private JButton clickButton10;
+    private JButton clickButton11;
+    private JButton clickButton12;
+    private JButton clickButton13;
+    private JButton clickButton14;
+    private JButton clickButton15;
+    private JButton clickButton16;
 
     public Game() {
-        setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-        setMaximumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-        setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 
         frame = new JFrame(NAME);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
-        clickAdd = new JButton("Current Orders");
-        clickSubtract = new JButton("Subtraction");
-        clickMultiply = new JButton("Multiplication");
-        clickDivide = new JButton("Division");
-        clickAdd.addActionListener((ActionListener) this);
-        clickSubtract.addActionListener((ActionListener) this);
-        clickMultiply.addActionListener((ActionListener) this);
-        clickDivide.addActionListener((ActionListener) this);
+        clickButton1 = new JButton("TEST");
+        clickButton2 = new JButton("Button2");
+        clickButton3 = new JButton("Button3");
+        clickButton4 = new JButton("Button4");
+        clickButton1.addActionListener((ActionListener) this);
+        clickButton2.addActionListener((ActionListener) this);
+        clickButton3.addActionListener((ActionListener) this);
+        clickButton4.addActionListener((ActionListener) this);
+
+        clickButton5 = new JButton("Button5");
+        clickButton6 = new JButton("Button6");
+        clickButton7 = new JButton("Button7");
+        clickButton8 = new JButton("Button8");
+        clickButton5.addActionListener((ActionListener) this);
+        clickButton6.addActionListener((ActionListener) this);
+        clickButton7.addActionListener((ActionListener) this);
+        clickButton8.addActionListener((ActionListener) this);
+
+        clickButton9 = new JButton("Button9");
+        clickButton10 = new JButton("Button10");
+        clickButton11 = new JButton("Button11");
+        clickButton12 = new JButton("Button12");
+        clickButton9.addActionListener((ActionListener) this);
+        clickButton10.addActionListener((ActionListener) this);
+        clickButton11.addActionListener((ActionListener) this);
+        clickButton12.addActionListener((ActionListener) this);
+
+        clickButton13 = new JButton("Button13");
+        clickButton14 = new JButton("Button14");
+        clickButton15 = new JButton("Button15");
+        clickButton16 = new JButton("button16");
+        clickButton13.addActionListener((ActionListener) this);
+        clickButton14.addActionListener((ActionListener) this);
+        clickButton15.addActionListener((ActionListener) this);
+        clickButton16.addActionListener((ActionListener) this);
 
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         buttonPanel.setBackground(Color.white);
         buttonPanel.setOpaque(false);
-
-        buttonPanel.add(clickAdd);
-        buttonPanel.add(clickSubtract);
-        buttonPanel.add(clickMultiply);
-        buttonPanel.add(clickDivide);
-        label1 = new JLabel(" ");
-        buttonPanel.add(label1);
-        label2 = new JLabel(" ");
-        buttonPanel.add(label2);
+        buttonPanel.add(clickButton1);
+        buttonPanel.add(clickButton2);
+        buttonPanel.add(clickButton3);
+        buttonPanel.add(clickButton4);
+        buttonPanel.add(clickButton5);
+        buttonPanel.add(clickButton6);
+        buttonPanel.add(clickButton7);
+        buttonPanel.add(clickButton8);
+        buttonPanel.add(clickButton9);
+        buttonPanel.add(clickButton10);
+        buttonPanel.add(clickButton11);
+        buttonPanel.add(clickButton12);
+        buttonPanel.add(clickButton13);
+        buttonPanel.add(clickButton14);
+        buttonPanel.add(clickButton15);
+        buttonPanel.add(clickButton16);
+        buttonPanel.setLayout(new GridLayout(4, 4));
 
         try {
             URL url = new URL("http://orig09.deviantart.net/879c/f/2012/119/1/0/pixel_waterfall_bg__by_isohei-d4xntof.gif");
@@ -134,7 +178,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
         frame.add(this, BorderLayout.CENTER); //adds canvas to jframe
 
         frame.pack();//keeps everything sized correctly (>= PrefferedSize)
-        frame.setSize(560, 330);
+        frame.setSize(560, 400);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -161,10 +205,8 @@ public class Game extends Canvas implements Runnable, ActionListener {
         long lastTimer = System.currentTimeMillis();
         double delta = 0; //how many nano-seconds have gone by so far. Once we hit 1, we will minus 1 from it
 
-
-
         int width = 420;
-     
+
         frame.setVisible(true);
 
         while (running) { //DA GAME
@@ -251,14 +293,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-
-        if (e.getSource() == clickAdd) {
-            addClick = true;
-
- 
-        }
-        if (e.getSource() == clickSubtract) {
-            subtractClick = true;
+        if (e.getSource() == clickButton1) {
             connect();
             try (PreparedStatement ps = connection.prepareStatement(" SELECT * FROM DAISYEMPLOYEE")) {
                 // In the SQL statement being prepared, each question mark is a placeholder
@@ -280,7 +315,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
                             // Also there are many methods on the result set to return
                             // the column as a particular type. Refer to the Sun documentation
                             // for the list of valid conversions.
-                           // System.out.println("COLUMN " + i + " = " + rs.getObject(i));
+                            // System.out.println("COLUMN " + i + " = " + rs.getObject(i));
                         } // for
                     } // while
                 } catch (SQLException ex) {
@@ -288,18 +323,215 @@ public class Game extends Canvas implements Runnable, ActionListener {
                     Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
                 } // try
             } catch (SQLException ex) {
-                 JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
+                JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             } // try
 
         }
-        if (e.getSource() == clickMultiply) {
-            multiplyClick = true;
+        if (e.getSource() == clickButton2) {
+            connect();
+            //Custom button text
+            Object[] options = {"Display All",
+                "Add New",
+                "Delete",
+                "Update"};
+            int n = JOptionPane.showOptionDialog(frame,
+                    "Please make a selection",
+                    "Employee Management",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[3]);
+            if (n == 0) { //Display All Employees
+                try (PreparedStatement ps = connection.prepareStatement(" SELECT * FROM DAISYEMPLOYEE")) {
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        ArrayList<String[]> result = new ArrayList<String[]>();
+                        int columnCount = rs.getMetaData().getColumnCount();
+                        while (rs.next()) {
+                            String[] row = new String[columnCount];
+                            for (int i = 0; i < columnCount; i++) {
+                                row[i] = rs.getString(i + 1);
+                            }
+                            result.add(row);
+                        }
+                        String[][] data = result.toArray(new String[][]{});
+                        //headers for the table
+                        String[] columns = new String[]{
+                            "SSN", "FNAME", "MINIT", "LNAME", "ADDRESS", "DATEHIRED", "PAY", "PHONE#"
+                        };
+
+                        //actual data for the table in a 2d array
+                        //create table with data
+                        JFrame frame2 = new JFrame("All Employees");
+                        JPanel panel = new JPanel();
+                        panel.setLayout(new BorderLayout());
+
+                        JTable table = new JTable(data, columns);
+                        JScrollPane tableContainer = new JScrollPane(table);
+                        panel.add(tableContainer, BorderLayout.CENTER);
+                        //add the table to the frame
+                        frame2.getContentPane().add(panel);
+
+                        frame2.pack();
+                        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                        frame2.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+                        frame2.setSize(800, 300);
+                        frame2.setVisible(true);
+
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(frame, "COMPLETELY FUCKED", "Daisy Imports", 3);
+                        Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                    } // try
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                } // try
+
+            }
+
+            if (n == 1) { //New Employee
+                String SSN, FNAME, MINIT, LNAME, ADDRESS, DATEHIRED, PAY, PHONE;
+             
+
+                String Statement = "INSERT INTO DAISYEMPLOYEE"
+                        + "(SSN, FNAME, MINIT, LNAME, ADDRESS, DATEHIRED, PAY, PHONE) VALUES "
+                        + "( ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                JOptionPane.showMessageDialog(frame, Statement, "Daisy Imports", 3);
+
+                try {
+                    PreparedStatement PST = connection.prepareStatement(Statement);
+                    SSN = JOptionPane.showInputDialog("Please input SSN");
+                    int result = Integer.parseInt(SSN);
+                    FNAME = JOptionPane.showInputDialog("Please input First Name");
+                    MINIT = JOptionPane.showInputDialog("Please input Middle Initial");
+                    LNAME = JOptionPane.showInputDialog("Please input Last Name");
+                    ADDRESS = JOptionPane.showInputDialog("Please input Address");
+                    DATEHIRED = JOptionPane.showInputDialog("Please input Date Hired(year-month-day)");
+                    PAY = JOptionPane.showInputDialog("Please input Pay(x.x)");
+                    PHONE = JOptionPane.showInputDialog("Please input Phone Number(xxxxxxxxxx)");
+                    PST.setInt(1, result);
+                    PST.setString(2, FNAME);
+                    PST.setString(3, MINIT);
+                    PST.setString(4, LNAME);
+                    PST.setString(5, ADDRESS);
+                    PST.setString(6, DATEHIRED);
+                    PST.setString(7, PAY);
+                    PST.setString(8, PHONE);
+
+                    PST.execute();
+
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                } // try
+            }
+
+            if (n == 2) {//Delete Employee
+
+                try (PreparedStatement ps = connection.prepareStatement(" SELECT * FROM DAISYEMPLOYEE")) {
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        ArrayList<String[]> result = new ArrayList<String[]>();
+                        int columnCount = rs.getMetaData().getColumnCount();
+                        while (rs.next()) {
+                            String[] row = new String[columnCount];
+                            for (int i = 0; i < columnCount; i++) {
+                                row[i] = rs.getString(i + 1);
+                            }
+                            result.add(row);
+                        }
+                        String[][] data = result.toArray(new String[][]{});
+                        //headers for the table
+                        String[] columns = new String[]{
+                            "SSN", "FNAME", "MINIT", "LNAME", "ADDRESS", "DATEHIRED", "PAY", "PHONE#"
+                        };
+
+                        //actual data for the table in a 2d array
+                        //create table with data
+                        JFrame frame2 = new JFrame("All Employees");
+                        JPanel panel = new JPanel();
+                        panel.setLayout(new BorderLayout());
+
+                        JTable table = new JTable(data, columns);
+                        JScrollPane tableContainer = new JScrollPane(table);
+                        panel.add(tableContainer, BorderLayout.CENTER);
+                        //add the table to the frame
+                        frame2.getContentPane().add(panel);
+
+                        frame2.pack();
+                        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                        frame2.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+                        frame2.setSize(800, 300);
+                        frame2.setVisible(true);
+
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(frame, "COMPLETELY FUCKED", "Daisy Imports", 3);
+                        Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                    } // try
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                } // try
+            }
+
+            if (n == 3) { //Update Employee
+
+                try (PreparedStatement ps = connection.prepareStatement(" SELECT * FROM DAISYEMPLOYEE")) {
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        ArrayList<String[]> result = new ArrayList<String[]>();
+                        int columnCount = rs.getMetaData().getColumnCount();
+                        while (rs.next()) {
+                            String[] row = new String[columnCount];
+                            for (int i = 0; i < columnCount; i++) {
+                                row[i] = rs.getString(i + 1);
+                            }
+                            result.add(row);
+                        }
+                        String[][] data = result.toArray(new String[][]{});
+                        //headers for the table
+                        String[] columns = new String[]{
+                            "SSN", "FNAME", "MINIT", "LNAME", "ADDRESS", "DATEHIRED", "PAY", "PHONE#"
+                        };
+
+                        //actual data for the table in a 2d array
+                        //create table with data
+                        JFrame frame2 = new JFrame("All Employees");
+                        JPanel panel = new JPanel();
+                        panel.setLayout(new BorderLayout());
+
+                        JTable table = new JTable(data, columns);
+                        JScrollPane tableContainer = new JScrollPane(table);
+                        panel.add(tableContainer, BorderLayout.CENTER);
+                        //add the table to the frame
+                        frame2.getContentPane().add(panel);
+
+                        frame2.pack();
+                        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                        frame2.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+                        frame2.setSize(800, 300);
+                        frame2.setVisible(true);
+
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(frame, "COMPLETELY FUCKED", "Daisy Imports", 3);
+                        Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                    } // try
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                } // try
+            }
 
         }
-        if (e.getSource() == clickDivide) {
-            divideClick = true;
+        if (e.getSource() == clickButton3) {
 
         }
+        if (e.getSource() == clickButton4) {
+
+        }
+
     }
 }
