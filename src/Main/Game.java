@@ -103,8 +103,8 @@ public class Game extends Canvas implements Runnable, ActionListener {
         frame.setLayout(new BorderLayout());
 
         clickButton1 = new JButton("TEST");
-        clickButton2 = new JButton("Button2");
-        clickButton3 = new JButton("Button3");
+        clickButton2 = new JButton("Employee MGMT");
+        clickButton3 = new JButton("Car MGMT");
         clickButton4 = new JButton("Button4");
         clickButton1.addActionListener((ActionListener) this);
         clickButton2.addActionListener((ActionListener) this);
@@ -329,9 +329,9 @@ public class Game extends Canvas implements Runnable, ActionListener {
         try {
             connection = DriverManager
                     .getConnection("jdbc:mysql://mysql.winnerdigital.net:3306/scott_412", "scott1044", "ohyesdaddy!");
-            JOptionPane.showMessageDialog(frame, "Connection Successful", "Daisy Imports", 3);
+            //JOptionPane.showMessageDialog(frame, "Connection Successful", "Daisy Imports", 3);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(frame, "FAILED TO CONNECT!", "Daisy Imports", 3);
+            //JOptionPane.showMessageDialog(frame, "FAILED TO CONNECT!", "Daisy Imports", 3);
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -340,11 +340,19 @@ public class Game extends Canvas implements Runnable, ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == clickButton1) {
-            connect();
+            try {
+                connection = DriverManager
+                        .getConnection("jdbc:mysql://mysql.winnerdigital.net:3306/scott_412", "scott1044", "ohyesdaddy!");
+                JOptionPane.showMessageDialog(frame, "Connection Successful", "Daisy Imports", 3);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(frame, "FAILED TO CONNECT!", "Daisy Imports", 3);
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         }
         if (e.getSource() == clickButton2) {
             connect();
+
             //Custom button text
             Object[] options = {"Display All",
                 "Add New",
@@ -374,8 +382,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
                         + "(SSN, FNAME, MINIT, LNAME, ADDRESS, DATEHIRED, PAY, PHONE) VALUES "
                         + "( ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                JOptionPane.showMessageDialog(frame, Statement, "Daisy Imports", 3);
-
+                //JOptionPane.showMessageDialog(frame, Statement, "Daisy Imports", 3);
                 try {
                     PreparedStatement PST = connection.prepareStatement(Statement);
                     SSN = JOptionPane.showInputDialog("Please input SSN");
@@ -406,14 +413,144 @@ public class Game extends Canvas implements Runnable, ActionListener {
 
             if (n == 2) {//Delete Employee
 
+                String Statement = "delete from DAISYEMPLOYEE where FNAME = ? AND LNAME = ?";
+                String FNAME = JOptionPane.showInputDialog("Please input First Name");
+
+                String LNAME = JOptionPane.showInputDialog("Please input Last Name");
+                //JOptionPane.showMessageDialog(frame, Statement, "Daisy Imports", 3);
+
+                try {
+                    PreparedStatement PST = connection.prepareStatement(Statement);
+
+                    PST.setString(1, FNAME);
+                    PST.setString(2, LNAME);
+
+                    PST.execute();
+
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, "Error in SQL", "Daisy Imports", 3);
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                } // try
+
             }
 
             if (n == 3) { //Update Employee
+                String Statement = "update DAISYEMPLOYEE set ADDRESS=?, PAY=?, PHONE=? where FNAME = ? AND LNAME = ?";
+
+                String FNAME = JOptionPane.showInputDialog("Please input First Name");
+
+                String LNAME = JOptionPane.showInputDialog("Please input Last Name");
+
+                String ADDR = JOptionPane.showInputDialog("Please input latest Address");
+                String PAY = JOptionPane.showInputDialog("Please input latest Pay");
+                String PHONE = JOptionPane.showInputDialog("Please input latest Phone");
+
+                //JOptionPane.showMessageDialog(frame, Statement, "Daisy Imports", 3);
+                try {
+                    PreparedStatement PST = connection.prepareStatement(Statement);
+
+                    PST.setString(1, ADDR);
+                    PST.setString(2, PAY);
+                    PST.setString(3, PHONE);
+                    PST.setString(4, FNAME);
+                    PST.setString(5, LNAME);
+
+                    PST.execute();
+
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, "Error in SQL", "Daisy Imports", 3);
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                } // try
 
             }
 
         }
         if (e.getSource() == clickButton3) {
+            connect();
+
+            //Custom button text
+            Object[] options = {"Display All",
+                "Add New",
+                "Show Client's Cars",
+                "Assign Car to Client",
+                "Update"};
+            int n = JOptionPane.showOptionDialog(frame,
+                    "Please make a selection",
+                    "Client Management",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[3]);
+            if (n == 0) {
+                String Query = (" SELECT * FROM CAR");
+                String[] columns = new String[]{
+                    "VIN", "Stored", "Plate#", "Make", "Model", "Color", "Work Order", "OWNER"
+                };
+                execution(Query, columns);
+
+            }
+            if (n == 1) {
+                String STORED, PLATE, MAKE, MODEL, COLOR;
+                String VIN, WORDER, OWNER;
+
+                String Statement = "INSERT INTO CAR"
+                        + "(VIN, STORAGESTATUS, PLATE, MAKE, MODEL, COLOR, WORDER, OWNER) VALUES "
+                        + "( ?, ?, ?, ?, ?, ?, null, null)";
+
+                //JOptionPane.showMessageDialog(frame, Statement, "Daisy Imports", 3);
+                try {
+                    PreparedStatement PST = connection.prepareStatement(Statement);
+                    VIN = JOptionPane.showInputDialog("Please input VIN");
+                    int VINi = Integer.parseInt(VIN);
+                    STORED = JOptionPane.showInputDialog("Please input Storage Status (Y/N)");
+                    PLATE = JOptionPane.showInputDialog("Please input plate number");
+                    MAKE = JOptionPane.showInputDialog("Please input make");
+                    MODEL = JOptionPane.showInputDialog("Please input model");
+                    COLOR = JOptionPane.showInputDialog("Please input color");
+                    //WORDER = JOptionPane.showInputDialog("Please input work order number");
+                    //int WORDERi = Integer.parseInt(WORDER);
+                    //OWNER = JOptionPane.showInputDialog("Please input owner id");
+                    //int OWNERi = Integer.parseInt(OWNER);
+                    PST.setInt(1, VINi);
+                    PST.setString(2, STORED);
+                    PST.setString(3, PLATE);
+                    PST.setString(4, MAKE);
+                    PST.setString(5, MODEL);
+                    PST.setString(6, COLOR);
+                    //PST.setInt(7, WORDERi);
+                    //PST.setInt(8, OWNERi);
+
+                    PST.execute();
+
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, "Error in SQL", "Daisy Imports", 3);
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                } // try
+            }
+            if (n == 2) {
+                String FNAME = JOptionPane.showInputDialog("Please input First Name");
+                String LNAME = JOptionPane.showInputDialog("Please input Last Name");
+                String Query = (" select * from CAR "
+                        + "where OWNER in "
+                        +" (select LICENCE from CLIENT"
+                        + " where FNAME = '"
+                        + FNAME
+                        + "' AND LNAME = '"
+                        + LNAME
+                        + "')");
+                JOptionPane.showMessageDialog(frame, Query, "Daisy Imports", 3);
+                String[] columns = new String[]{
+                    "VIN", "Stored", "Plate#", "Make", "Model", "Color", "Work Order", "OWNER"
+                };
+                execution(Query, columns);
+            }
+            if (n == 3) {
+
+            }
+            if (n == 4) {
+
+            }
 
         }
         if (e.getSource() == clickButton4) {
