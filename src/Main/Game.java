@@ -56,7 +56,7 @@ import javax.swing.JTable;
  * @author malory, john, scott
  */
 public class Game extends Canvas implements Runnable, ActionListener {
-
+    
     JComboBox LevelDisplay;
     private static final long serialVersionUID = 1L;
 
@@ -96,7 +96,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
     private JButton clickButton16;
 
     public Game() {
-
+        connect();
         frame = new JFrame(NAME);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -170,7 +170,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
             frame.setLocationRelativeTo(null);
             //f.setVisible(true);
         } catch (Exception e) {
-            System.out.println("OMG WTF");
+            System.out.println("Failure");
         }
 
         frame.add(buttonPanel, BorderLayout.SOUTH);
@@ -279,7 +279,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
     }
 
     public void execution(String Query, String[] headers) {
-        connect();
+        //connect();
         try (PreparedStatement ps = connection.prepareStatement(Query)) {
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -311,7 +311,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
                 frame2.pack();
                 Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
                 frame2.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
-                frame2.setSize(800, 300);
+                frame2.setSize(800, 400);
                 frame2.setVisible(true);
 
             } catch (SQLException ex) {
@@ -351,7 +351,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
 
         }
         if (e.getSource() == clickButton2) {
-            connect();
+            //connect();
 
             //Custom button text
             Object[] options = {"Display All",
@@ -466,7 +466,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
 
         }
         if (e.getSource() == clickButton3) {
-            connect();
+            //connect();
 
             //Custom button text
             Object[] options = {"Display All",
