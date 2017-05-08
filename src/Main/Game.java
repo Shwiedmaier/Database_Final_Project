@@ -278,12 +278,58 @@ public class Game extends Canvas implements Runnable, ActionListener {
 
     }
 
+    public void execution(String Query, String[] headers) {
+        connect();
+        try (PreparedStatement ps = connection.prepareStatement(Query)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                ArrayList<String[]> result = new ArrayList<String[]>();
+                int columnCount = rs.getMetaData().getColumnCount();
+                while (rs.next()) {
+                    String[] row = new String[columnCount];
+                    for (int i = 0; i < columnCount; i++) {
+                        row[i] = rs.getString(i + 1);
+                    }
+                    result.add(row);
+                }
+                String[][] data = result.toArray(new String[][]{});
+                //headers for the table
+                String[] columns = headers;
+
+                //actual data for the table in a 2d array
+                //create table with data
+                JFrame frame2 = new JFrame("All Employees");
+                JPanel panel = new JPanel();
+                panel.setLayout(new BorderLayout());
+
+                JTable table = new JTable(data, columns);
+                JScrollPane tableContainer = new JScrollPane(table);
+                panel.add(tableContainer, BorderLayout.CENTER);
+                //add the table to the frame
+                frame2.getContentPane().add(panel);
+
+                frame2.pack();
+                Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                frame2.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+                frame2.setSize(800, 300);
+                frame2.setVisible(true);
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(frame, "Error in SQL", "Daisy Imports", 3);
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            } // try
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(frame, "Error in SQL", "Daisy Imports", 3);
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        } // try
+    }
+
     public void connect() {
 
         try {
             connection = DriverManager
                     .getConnection("jdbc:mysql://mysql.winnerdigital.net:3306/scott_412", "scott1044", "ohyesdaddy!");
-            JOptionPane.showMessageDialog(frame, "WE MADE IT", "Daisy Imports", 3);
+            JOptionPane.showMessageDialog(frame, "Connection Successful", "Daisy Imports", 3);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(frame, "FAILED TO CONNECT!", "Daisy Imports", 3);
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
@@ -295,37 +341,6 @@ public class Game extends Canvas implements Runnable, ActionListener {
 
         if (e.getSource() == clickButton1) {
             connect();
-            try (PreparedStatement ps = connection.prepareStatement(" SELECT * FROM DAISYEMPLOYEE")) {
-                // In the SQL statement being prepared, each question mark is a placeholder
-                // that must be replaced with a value you provide through a "set" method invocation.
-                // The following two method calls replace the two placeholders; the first is
-                // replaced by a string value, and the second by an integer value.
-                //ps.setString(1, "scott");
-
-                // The ResultSet, rs, conveys the result of executing the SQL statement.
-                // Each time you call rs.next(), an internal row pointer, or cursor,
-                // is advanced to the next row of the result.  The cursor initially is
-                // positioned before the first row.
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        int numColumns = rs.getMetaData().getColumnCount();
-                        for (int i = 1; i <= numColumns; i++) {
-                            JOptionPane.showMessageDialog(frame, "COLUMN " + i + " = " + rs.getObject(i), "Daisy Imports", 3);
-                            // Column numbers start at 1.
-                            // Also there are many methods on the result set to return
-                            // the column as a particular type. Refer to the Sun documentation
-                            // for the list of valid conversions.
-                            // System.out.println("COLUMN " + i + " = " + rs.getObject(i));
-                        } // for
-                    } // while
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(frame, "COMPLETELY FUCKED", "Daisy Imports", 3);
-                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                } // try
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
-                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-            } // try
 
         }
         if (e.getSource() == clickButton2) {
@@ -344,56 +359,16 @@ public class Game extends Canvas implements Runnable, ActionListener {
                     options,
                     options[3]);
             if (n == 0) { //Display All Employees
-                try (PreparedStatement ps = connection.prepareStatement(" SELECT * FROM DAISYEMPLOYEE")) {
-
-                    try (ResultSet rs = ps.executeQuery()) {
-                        ArrayList<String[]> result = new ArrayList<String[]>();
-                        int columnCount = rs.getMetaData().getColumnCount();
-                        while (rs.next()) {
-                            String[] row = new String[columnCount];
-                            for (int i = 0; i < columnCount; i++) {
-                                row[i] = rs.getString(i + 1);
-                            }
-                            result.add(row);
-                        }
-                        String[][] data = result.toArray(new String[][]{});
-                        //headers for the table
-                        String[] columns = new String[]{
-                            "SSN", "FNAME", "MINIT", "LNAME", "ADDRESS", "DATEHIRED", "PAY", "PHONE#"
-                        };
-
-                        //actual data for the table in a 2d array
-                        //create table with data
-                        JFrame frame2 = new JFrame("All Employees");
-                        JPanel panel = new JPanel();
-                        panel.setLayout(new BorderLayout());
-
-                        JTable table = new JTable(data, columns);
-                        JScrollPane tableContainer = new JScrollPane(table);
-                        panel.add(tableContainer, BorderLayout.CENTER);
-                        //add the table to the frame
-                        frame2.getContentPane().add(panel);
-
-                        frame2.pack();
-                        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-                        frame2.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
-                        frame2.setSize(800, 300);
-                        frame2.setVisible(true);
-
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(frame, "COMPLETELY FUCKED", "Daisy Imports", 3);
-                        Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                    } // try
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
-                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                } // try
+                String Query = (" SELECT * FROM DAISYEMPLOYEE");
+                String[] columns = new String[]{
+                    "SSN", "FNAME", "MINIT", "LNAME", "ADDRESS", "DATEHIRED", "PAY", "PHONE#"
+                };
+                execution(Query, columns);
 
             }
 
             if (n == 1) { //New Employee
                 String SSN, FNAME, MINIT, LNAME, ADDRESS, DATEHIRED, PAY, PHONE;
-             
 
                 String Statement = "INSERT INTO DAISYEMPLOYEE"
                         + "(SSN, FNAME, MINIT, LNAME, ADDRESS, DATEHIRED, PAY, PHONE) VALUES "
@@ -424,105 +399,17 @@ public class Game extends Canvas implements Runnable, ActionListener {
                     PST.execute();
 
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
+                    JOptionPane.showMessageDialog(frame, "Error in SQL", "Daisy Imports", 3);
                     Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
                 } // try
             }
 
             if (n == 2) {//Delete Employee
 
-                try (PreparedStatement ps = connection.prepareStatement(" SELECT * FROM DAISYEMPLOYEE")) {
-
-                    try (ResultSet rs = ps.executeQuery()) {
-                        ArrayList<String[]> result = new ArrayList<String[]>();
-                        int columnCount = rs.getMetaData().getColumnCount();
-                        while (rs.next()) {
-                            String[] row = new String[columnCount];
-                            for (int i = 0; i < columnCount; i++) {
-                                row[i] = rs.getString(i + 1);
-                            }
-                            result.add(row);
-                        }
-                        String[][] data = result.toArray(new String[][]{});
-                        //headers for the table
-                        String[] columns = new String[]{
-                            "SSN", "FNAME", "MINIT", "LNAME", "ADDRESS", "DATEHIRED", "PAY", "PHONE#"
-                        };
-
-                        //actual data for the table in a 2d array
-                        //create table with data
-                        JFrame frame2 = new JFrame("All Employees");
-                        JPanel panel = new JPanel();
-                        panel.setLayout(new BorderLayout());
-
-                        JTable table = new JTable(data, columns);
-                        JScrollPane tableContainer = new JScrollPane(table);
-                        panel.add(tableContainer, BorderLayout.CENTER);
-                        //add the table to the frame
-                        frame2.getContentPane().add(panel);
-
-                        frame2.pack();
-                        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-                        frame2.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
-                        frame2.setSize(800, 300);
-                        frame2.setVisible(true);
-
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(frame, "COMPLETELY FUCKED", "Daisy Imports", 3);
-                        Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                    } // try
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
-                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                } // try
             }
 
             if (n == 3) { //Update Employee
 
-                try (PreparedStatement ps = connection.prepareStatement(" SELECT * FROM DAISYEMPLOYEE")) {
-
-                    try (ResultSet rs = ps.executeQuery()) {
-                        ArrayList<String[]> result = new ArrayList<String[]>();
-                        int columnCount = rs.getMetaData().getColumnCount();
-                        while (rs.next()) {
-                            String[] row = new String[columnCount];
-                            for (int i = 0; i < columnCount; i++) {
-                                row[i] = rs.getString(i + 1);
-                            }
-                            result.add(row);
-                        }
-                        String[][] data = result.toArray(new String[][]{});
-                        //headers for the table
-                        String[] columns = new String[]{
-                            "SSN", "FNAME", "MINIT", "LNAME", "ADDRESS", "DATEHIRED", "PAY", "PHONE#"
-                        };
-
-                        //actual data for the table in a 2d array
-                        //create table with data
-                        JFrame frame2 = new JFrame("All Employees");
-                        JPanel panel = new JPanel();
-                        panel.setLayout(new BorderLayout());
-
-                        JTable table = new JTable(data, columns);
-                        JScrollPane tableContainer = new JScrollPane(table);
-                        panel.add(tableContainer, BorderLayout.CENTER);
-                        //add the table to the frame
-                        frame2.getContentPane().add(panel);
-
-                        frame2.pack();
-                        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-                        frame2.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
-                        frame2.setSize(800, 300);
-                        frame2.setVisible(true);
-
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(frame, "COMPLETELY FUCKED", "Daisy Imports", 3);
-                        Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                    } // try
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(frame, "TOTALLY FUCKED", "Daisy Imports", 3);
-                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                } // try
             }
 
         }
