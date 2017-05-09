@@ -847,7 +847,8 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
         if (e.getSource() == clickButton8) {
             Object[] options = {
                 "Cars Currently Being Worked on",
-                "Total Part Inventory Cost"};
+                "Total Part Inventory Cost",
+                "Cars in the garage"};
             int n = JOptionPane.showOptionDialog(frame,
                     "Please make a selection",
                     "Meta Data",
@@ -923,6 +924,13 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
                     Logger.getLogger(DaisyGui.class.getName()).log(Level.SEVERE, null, ex);
                 } // try // try
 
+            }
+            if (n == 2) {
+                String Query = (" SELECT * FROM CAR WHERE STORAGESTATUS = 'Y' ");
+                String[] columns = new String[]{
+                    "VIN", "Stored", "Plate#", "Make", "Model", "Color", "OWNER"
+                };
+                execution(Query, columns);
             }
         }
 
