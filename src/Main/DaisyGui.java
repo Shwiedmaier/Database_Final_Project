@@ -458,18 +458,18 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
             if (n == 0) {
                 String Query = (" SELECT * FROM CAR");
                 String[] columns = new String[]{
-                    "VIN", "Stored", "Plate#", "Make", "Model", "Color", "OWNER"
+                    "VIN", "Stored", "Plate#", "Year", "Make", "Model", "Color", "OWNER"
                 };
                 execution(Query, columns);
 
             }
             if (n == 1) {
                 String STORED, PLATE, MAKE, MODEL, COLOR;
-                String VIN, WORDER, OWNER;
+                String VIN, WORDER, OWNER, YEAR;
 
                 String Statement = "INSERT INTO CAR"
-                        + "(VIN, STORAGESTATUS, PLATE, MAKE, MODEL, COLOR, OWNER) VALUES "
-                        + "( ?, ?, ?, ?, ?, ?, ?)";
+                        + "(VIN, STORAGESTATUS, PLATE, MAKE, MODEL, COLOR, OWNER, YEAR) VALUES "
+                        + "( ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 //JOptionPane.showMessageDialog(frame, Statement, "Daisy Imports", 3);
                 try {
@@ -485,6 +485,8 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
                     //int WORDERi = Integer.parseInt(WORDER);
                     OWNER = JOptionPane.showInputDialog("Please input owners Driver license number");
                     int OWNERi = Integer.parseInt(OWNER);
+                    YEAR = JOptionPane.showInputDialog("Please input year of make");
+                    int YEARi = Integer.parseInt(YEAR);
                     PST.setInt(1, VINi);
                     PST.setString(2, STORED);
                     PST.setString(3, PLATE);
@@ -493,7 +495,7 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
                     PST.setString(6, COLOR);
                     //PST.setInt(7, WORDERi);
                     PST.setInt(7, OWNERi);
-
+                    PST.setInt(8, YEARi);
                     PST.execute();
 
                 } catch (SQLException ex) {
@@ -514,7 +516,7 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
                         + "')");
                 //JOptionPane.showMessageDialog(frame, Query, "Daisy Imports", 3);
                 String[] columns = new String[]{
-                    "VIN", "Stored", "Plate#", "Make", "Model", "Color", "OWNER"
+                    "VIN", "Stored", "Plate#", "Year", "Make", "Model", "Color", "OWNER"
                 };
                 execution(Query, columns);
             }
@@ -866,7 +868,7 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
                         + " from JOB"
                         + " where STATUS like 'Y'))");
                 String[] columns = new String[]{
-                    "VIN", "Stored", "Plate#", "Make", "Model", "Color", "OWNER"
+                    "VIN", "Stored", "Plate#", "Year", "Make", "Model", "Color", "OWNER"
                 };
                 execution(Query, columns);
             }
@@ -928,7 +930,7 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
             if (n == 2) {
                 String Query = (" SELECT * FROM CAR WHERE STORAGESTATUS = 'Y' ");
                 String[] columns = new String[]{
-                    "VIN", "Stored", "Plate#", "Make", "Model", "Color", "OWNER"
+                    "VIN", "Stored", "Plate#", "Year", "Make", "Model", "Color", "OWNER"
                 };
                 execution(Query, columns);
             }
