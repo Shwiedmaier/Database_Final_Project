@@ -102,7 +102,7 @@ public class Game extends Canvas implements Runnable, ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
-        clickButton1 = new JButton("TEST");
+        clickButton1 = new JButton("Connection TEST");
         clickButton2 = new JButton("Employee MGMT");
         clickButton3 = new JButton("Car MGMT");
         clickButton4 = new JButton("WorkOrder MGMT");
