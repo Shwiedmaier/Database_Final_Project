@@ -112,7 +112,7 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
         clickButton4.addActionListener((ActionListener) this);
 
         clickButton5 = new JButton("Client MGMT");
-        clickButton6 = new JButton("Manage WrkOrd");
+        clickButton6 = new JButton("Manage a Order");
         clickButton7 = new JButton("PART MGMT");
         clickButton8 = new JButton("META DATA");
         clickButton5.addActionListener((ActionListener) this);
@@ -302,7 +302,7 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
 
         try {
             connection = DriverManager
-                    .getConnection("jdbc:mysql://mysql.winnerdigital.net:3306/scott_412", "scott1044", "ohyesdaddy!");
+                    .getConnection("jdbc:mysql://triton.towson.edu:3360/swiedm1db", "swiedm1", "Cosc*kdp7");
             //JOptionPane.showMessageDialog(frame, "Connection Successful", "Daisy Imports", 3);
         } catch (SQLException ex) {
             //JOptionPane.showMessageDialog(frame, "FAILED TO CONNECT!", "Daisy Imports", 3);
@@ -316,7 +316,7 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
         if (e.getSource() == clickButton1) {
             try {
                 connection = DriverManager
-                        .getConnection("jdbc:mysql://mysql.winnerdigital.net:3306/scott_412", "scott1044", "ohyesdaddy!");
+                        .getConnection("jdbc:mysql://triton.towson.edu:3360/swiedm1db", "swiedm1", "Cosc*kdp7");
                 JOptionPane.showMessageDialog(frame, "Connection Successful", "Daisy Imports", 3);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(frame, "FAILED TO CONNECT!", "Daisy Imports", 3);
@@ -449,7 +449,7 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
                 "Change Storage Status"};
             int n = JOptionPane.showOptionDialog(frame,
                     "Please make a selection",
-                    "Client Management",
+                    "Car Management",
                     JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,
@@ -549,7 +549,7 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
                 "New Work Order"};
             int n = JOptionPane.showOptionDialog(frame,
                     "Please make a selection",
-                    "Employee Management",
+                    "Work Order Management",
                     JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,
