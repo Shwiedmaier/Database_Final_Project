@@ -360,15 +360,14 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
                 try {
                     PreparedStatement PST = connection.prepareStatement(Statement);
                     SSN = JOptionPane.showInputDialog("Please input SSN");
-                    int result = Integer.parseInt(SSN);
                     FNAME = JOptionPane.showInputDialog("Please input First Name");
                     MINIT = JOptionPane.showInputDialog("Please input Middle Initial");
                     LNAME = JOptionPane.showInputDialog("Please input Last Name");
                     ADDRESS = JOptionPane.showInputDialog("Please input Address");
                     DATEHIRED = JOptionPane.showInputDialog("Please input Date Hired(year-month-day)");
-                    PAY = JOptionPane.showInputDialog("Please input Pay(x.x)");
+                    PAY = JOptionPane.showInputDialog("Please input Pay(xx.xx)");
                     PHONE = JOptionPane.showInputDialog("Please input Phone Number(xxxxxxxxxx)");
-                    PST.setInt(1, result);
+                    PST.setString(1, SSN);
                     PST.setString(2, FNAME);
                     PST.setString(3, MINIT);
                     PST.setString(4, LNAME);
@@ -416,7 +415,7 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
                 String LNAME = JOptionPane.showInputDialog("Please input Last Name");
 
                 String ADDR = JOptionPane.showInputDialog("Please input latest Address");
-                String PAY = JOptionPane.showInputDialog("Please input latest Pay");
+                String PAY = JOptionPane.showInputDialog("Please input latest Pay(xx.xx)");
                 String PHONE = JOptionPane.showInputDialog("Please input latest Phone");
 
                 //JOptionPane.showMessageDialog(frame, Statement, "Daisy Imports", 3);
@@ -778,7 +777,7 @@ public class DaisyGui extends Canvas implements Runnable, ActionListener {
         }
         if (e.getSource() == clickButton7) {
             Object[] options = {"Part Inventory ",
-                "Availible Parts",
+                "Available Parts",
                 "Add Part",
                 "Delete Part",};
             int n = JOptionPane.showOptionDialog(frame,
